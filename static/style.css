@@ -1,0 +1,183 @@
+body {
+
+    background: linear-gradient(
+        135deg,
+        #0f2027,
+        #203a43,
+        #2c5364
+    );
+
+    min-height: 100vh;
+
+    font-family: 'Segoe UI', sans-serif;
+
+    color: white;
+
+}
+
+
+
+.container {
+
+    max-width: 900px;
+
+}
+
+
+
+.security-box {
+
+    background: rgba(255,255,255,0.1);
+
+    backdrop-filter: blur(15px);
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+
+}
+
+
+
+h1 {
+
+    font-weight: 700;
+
+}
+
+
+
+.subtitle {
+
+    font-size: 18px;
+
+    opacity: 0.9;
+
+}
+
+
+
+.form-control {
+
+    background: rgba(255,255,255,0.9);
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+}
+
+
+
+.form-control:focus {
+
+    border-color: #00ffff;
+
+    box-shadow: 0 0 10px #00ffff;
+
+}
+
+
+
+.btn-primary {
+
+    background: #007bff;
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    font-size: 18px;
+
+}
+
+
+
+.btn-primary:hover {
+
+    background: #0056b3;
+
+}
+
+
+
+.btn-dark {
+
+    border-radius: 10px;
+
+    padding: 12px 25px;
+
+}
+
+
+
+.dashboard-card {
+
+    background: rgba(255,255,255,0.12);
+
+    color: white;
+
+    border-radius: 20px;
+
+    border: none;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+
+}
+
+
+
+.dashboard-card i {
+
+    color: #00ffff;
+
+}
+
+
+
+.table {
+
+    background: white;
+
+    color: black;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+}
+
+
+
+.alert {
+
+    border-radius: 10px;
+
+    font-weight: bold;
+
+}
+
+
+
+@media(max-width:768px){
+
+
+    .security-box {
+
+        padding: 25px;
+
+    }
+
+
+    h1 {
+
+        font-size: 28px;
+
+    }
+
+
+}

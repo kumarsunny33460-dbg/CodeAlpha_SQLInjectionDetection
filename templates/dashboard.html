@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SQL Security Dashboard</title>
+
+    <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+
+    <link 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<div class="container mt-5">
+
+
+    <h1 class="text-center mb-4">
+        🔐 SQL Injection Security Dashboard
+    </h1>
+
+
+
+    <div class="row text-center">
+
+
+        <div class="col-md-6">
+
+            <div class="card dashboard-card p-4">
+
+                <i class="fa-solid fa-users fa-3x"></i>
+
+                <h3 class="mt-3">
+                    Total Users
+                </h3>
+
+                <h1>
+                    {{ total_users }}
+                </h1>
+
+            </div>
+
+        </div>
+
+
+
+
+        <div class="col-md-6">
+
+            <div class="card dashboard-card p-4">
+
+                <i class="fa-solid fa-triangle-exclamation fa-3x"></i>
+
+                <h3 class="mt-3">
+                    Attack Attempts
+                </h3>
+
+                <h1>
+                    {{ total_attacks }}
+                </h1>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <hr class="my-5">
+
+
+
+    <h2>
+        👤 Secure Users
+    </h2>
+
+
+    <div class="table-responsive">
+
+
+    <table class="table table-bordered table-striped">
+
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Email</th>
+
+                <th>Security</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+
+
+        <tbody>
+
+
+        {% for user in users %}
+
+
+            <tr>
+
+                <td>
+                    {{ user.name }}
+                </td>
+
+
+                <td>
+                    {{ user.email }}
+                </td>
+
+
+                <td>
+                    {{ user.security }}
+                </td>
+
+
+                <td>
+                    {{ user.created_at }}
+                </td>
+
+
+            </tr>
+
+
+        {% endfor %}
+
+
+        </tbody>
+
+
+    </table>
+
+
+    </div>
+
+
+
+
+
+
+    <hr class="my-5">
+
+
+
+
+
+    <h2>
+        🚨 Attack Logs
+    </h2>
+
+
+
+    <div class="table-responsive">
+
+
+    <table class="table table-bordered table-danger">
+
+
+        <thead>
+
+
+            <tr>
+
+                <th>Attack Type</th>
+
+                <th>Input</th>
+
+                <th>Time</th>
+
+
+            </tr>
+
+
+        </thead>
+
+
+
+
+        <tbody>
+
+
+        {% for attack in attacks %}
+
+
+            <tr>
+
+
+                <td>
+                    {{ attack.type }}
+                </td>
+
+
+
+                <td>
+                    {{ attack.input }}
+                </td>
+
+
+
+                <td>
+                    {{ attack.time }}
+                </td>
+
+
+
+            </tr>
+
+
+        {% endfor %}
+
+
+        </tbody>
+
+
+
+    </table>
+
+
+    </div>
+
+
+
+
+    <div class="text-center mt-4">
+
+        <a href="/" class="btn btn-primary">
+            ← Back To Home
+        </a>
+
+    </div>
+
+
+
+</div>
+
+
+
+</body>
+
+</html>
