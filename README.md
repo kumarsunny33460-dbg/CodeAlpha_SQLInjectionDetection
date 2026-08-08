@@ -465,7 +465,7 @@ Future improvements:
 # 📸 Screenshots
 
 1. 🏠 Home Page
-      lt text](homepage.png)
+      ![alt text](homepage-1.png)
 
 2. ✅ Secure Registration Success
       ![alt text](secureregistration.png)
