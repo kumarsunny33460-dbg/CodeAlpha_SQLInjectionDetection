@@ -4,27 +4,41 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>
-        SQL Injection Detection & Secure Data Protection
+        SQLShield | Secure Data Protection
     </title>
 
+    <meta name="description"
+          content="SQL Injection Detection and Secure Data Protection System">
 
-    <!-- Bootstrap -->
-    <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- Font Awesome -->
-    <link 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    rel="stylesheet">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com">
 
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
 
-    <link rel="stylesheet" href="/static/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
 
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}">
 
 </head>
 
@@ -32,248 +46,2138 @@
 <body>
 
 
-<nav class="navbar navbar-dark bg-dark px-4">
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
 
-    <span class="navbar-brand">
-        <i class="fa-solid fa-shield-halved"></i>
-        Cyber Security Dashboard
-    </span>
+<div class="background-grid"></div>
 
-</nav>
-
-
-
-<div class="container mt-4">
+<div class="glow glow-one"></div>
+<div class="glow glow-two"></div>
 
 
-    <div class="text-center mb-4">
+<!-- =====================================================
+     MOBILE TOPBAR
+===================================================== -->
 
-        <h1>
-            🔐 SQL Injection Detection System
+<header class="mobile-topbar">
+
+    <button
+        class="mobile-menu-btn"
+        onclick="toggleSidebar()">
+
+        <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+    <div class="mobile-brand">
+
+        <div class="brand-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <span>SQLShield</span>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside id="sidebar" class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-logo">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+        <div>
+
+            <h2>SQLShield</h2>
+
+            <span>Security Platform</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="sidebar-section-title">
+        MAIN MENU
+    </div>
+
+
+    <nav class="navigation">
+
+        <button
+            class="nav-item active"
+            data-page="home"
+            onclick="showPage('home')">
+
+            <i class="fa-solid fa-house"></i>
+
+            <span>Overview</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="dashboard"
+            onclick="showPage('dashboard')">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            <span>Dashboard</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="register"
+            onclick="showPage('register')">
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <span>Secure Registration</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="security"
+            onclick="showPage('security')">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <span>Security Center</span>
+
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="developer-card">
+
+            <div class="developer-icon">
+
+                <i class="fa-solid fa-code"></i>
+
+            </div>
+
+            <div>
+
+                <small>Developed by</small>
+
+                <strong>Sunny Kumar</strong>
+
+            </div>
+
+        </div>
+
+        <div class="version">
+            SQLShield v1.0 • Final Build
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+
+<!-- =====================================================
+     GLOBAL TOP HEADER
+===================================================== -->
+
+<div class="top-header">
+
+    <div>
+
+        <span class="eyebrow">
+            <span class="live-dot"></span>
+            SYSTEM ONLINE
+        </span>
+
+        <h1 id="pageTitle">
+            Security Overview
         </h1>
 
-        <p>
-            Double Layer Security Protocol
-            <br>
-            SQL Detection + Capability Verification + AES Encryption
+        <p id="pageSubtitle">
+            Intelligent SQL injection detection and secure data protection.
         </p>
 
     </div>
 
 
+    <div class="header-security">
 
+        <div class="security-pulse">
 
-    <!-- Statistics Cards -->
+            <span></span>
 
-    <div class="row g-4">
-
-
-        <div class="col-md-4">
-
-            <div class="security-card">
-
-                <i class="fa-solid fa-users"></i>
-
-                <h3>
-                    {{total_users}}
-                </h3>
-
-                <p>
-                    Secure Users
-                </p>
-
+            <div>
+                <strong>Protection Active</strong>
+                <small>Real-time monitoring</small>
             </div>
 
         </div>
 
-
-
-        <div class="col-md-4">
-
-            <div class="security-card danger">
-
-                <i class="fa-solid fa-bug"></i>
-
-                <h3>
-                    {{total_attacks}}
-                </h3>
-
-                <p>
-                    Attacks Blocked
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="col-md-4">
-
-            <div class="security-card success">
-
-                <i class="fa-solid fa-lock"></i>
-
-                <h3>
-                    ACTIVE
-                </h3>
-
-                <p>
-                    Security Status
-                </p>
-
-            </div>
-
-        </div>
-
-
     </div>
-
-
-
-
-    <!-- Registration Form -->
-
-    <div class="dashboard-box mt-5">
-
-
-        <h2>
-            <i class="fa-solid fa-user-plus"></i>
-            Secure User Registration
-        </h2>
-
-
-        <form id="registerForm">
-
-
-            <input 
-            class="form-control"
-            name="name"
-            placeholder="Enter Name"
-            required>
-
-
-            <input 
-            class="form-control mt-3"
-            name="email"
-            type="email"
-            placeholder="Enter Email"
-            required>
-
-
-            <input 
-            class="form-control mt-3"
-            name="password"
-            type="password"
-            placeholder="Enter Password"
-            required>
-
-
-
-            <input 
-            class="form-control mt-3"
-            name="capability_code"
-            placeholder="Enter Capability Code"
-            required>
-
-
-
-            <button 
-            class="btn btn-primary mt-4 w-100">
-
-                <i class="fa-solid fa-shield"></i>
-                Secure Register
-
-            </button>
-
-
-        </form>
-
-
-        <div id="message"
-        class="mt-3 text-center">
-        </div>
-
-
-    </div>
-
-
-
-
-
-    <!-- Attack Logs -->
-
-
-    <div class="dashboard-box mt-5">
-
-
-        <h2>
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            Recent Security Events
-        </h2>
-
-
-
-        <table class="table table-dark table-hover">
-
-
-            <tr>
-
-                <th>
-                    User
-                </th>
-
-                <th>
-                    Attack Type
-                </th>
-
-                <th>
-                    Time
-                </th>
-
-            </tr>
-
-
-
-            {% for log in logs %}
-
-            <tr>
-
-                <td>
-                    {{log.name}}
-                </td>
-
-                <td>
-                    {{log.attack_type}}
-                </td>
-
-                <td>
-                    {{log.time}}
-                </td>
-
-
-            </tr>
-
-
-            {% endfor %}
-
-
-        </table>
-
-
-    </div>
-
-
-
 
 </div>
 
 
+<!-- =====================================================
+     HOME PAGE
+===================================================== -->
+
+<section id="homePage" class="page-section active-page">
 
 
-<script src="/static/script.js"></script>
+    <div class="hero-card">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                DOUBLE-LAYER SECURITY
+
+            </div>
+
+            <h2>
+                Protect sensitive data.
+                <span>Stop SQL attacks.</span>
+            </h2>
+
+            <p>
+                SQLShield combines intelligent SQL injection detection,
+                capability-code verification and AES-256 encryption
+                to create a secure data protection environment.
+            </p>
+
+
+            <div class="hero-actions">
+
+                <button
+                    class="primary-btn"
+                    onclick="showPage('register')">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    Secure Registration
+
+                </button>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="showPage('dashboard')">
+
+                    <i class="fa-solid fa-chart-simple"></i>
+
+                    Open Dashboard
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+            <div class="shield-orbit orbit-one"></div>
+            <div class="shield-orbit orbit-two"></div>
+
+            <div class="hero-shield">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <div class="shield-check">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+            </div>
+
+            <div class="floating-security-card card-top">
+
+                <i class="fa-solid fa-bolt"></i>
+
+                <div>
+                    <strong>Threat Detection</strong>
+                    <small>Active</small>
+                </div>
+
+            </div>
+
+
+            <div class="floating-security-card card-bottom">
+
+                <i class="fa-solid fa-key"></i>
+
+                <div>
+                    <strong>AES-256</strong>
+                    <small>Encryption</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FEATURE CARDS -->
+
+    <div class="section-heading">
+
+        <div>
+
+            <span>SECURITY LAYERS</span>
+
+            <h3>Built for secure data handling</h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon blue">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+            </div>
+
+            <h4>SQL Injection Detection</h4>
+
+            <p>
+                Suspicious SQL patterns are identified
+                before the request is processed.
+            </p>
+
+            <div class="feature-status">
+                <span></span>
+                Detection Active
+            </div>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon purple">
+
+                <i class="fa-solid fa-key"></i>
+
+            </div>
+
+            <h4>Capability Verification</h4>
+
+            <p>
+                A secure capability code provides
+                an additional authorization layer.
+            </p>
+
+            <div class="feature-status">
+                <span></span>
+                Verification Active
+            </div>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon green">
+
+                <i class="fa-solid fa-lock"></i>
+
+            </div>
+
+            <h4>AES-256 Encryption</h4>
+
+            <p>
+                Sensitive credentials are encrypted
+                before being stored in the database.
+            </p>
+
+            <div class="feature-status">
+                <span></span>
+                Encryption Active
+            </div>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon orange">
+
+                <i class="fa-solid fa-cloud"></i>
+
+            </div>
+
+            <h4>Cloud Database</h4>
+
+            <p>
+                Secure metadata and security events
+                are stored using MongoDB Atlas.
+            </p>
+
+            <div class="feature-status">
+                <span></span>
+                Cloud Connected
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SECURITY FLOW -->
+
+    <div class="security-flow-card">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>PROTECTION PIPELINE</span>
+
+                <h3>How SQLShield protects your data</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="flow">
+
+            <div class="flow-step">
+
+                <div class="flow-number">01</div>
+
+                <i class="fa-solid fa-user"></i>
+
+                <strong>User Input</strong>
+
+                <small>Request received</small>
+
+            </div>
+
+
+            <div class="flow-line"></div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-number">02</div>
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <strong>Threat Scan</strong>
+
+                <small>SQL patterns checked</small>
+
+            </div>
+
+
+            <div class="flow-line"></div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-number">03</div>
+
+                <i class="fa-solid fa-key"></i>
+
+                <strong>Authorization</strong>
+
+                <small>Capability verified</small>
+
+            </div>
+
+
+            <div class="flow-line"></div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-number">04</div>
+
+                <i class="fa-solid fa-lock"></i>
+
+                <strong>Encryption</strong>
+
+                <small>AES-256 protection</small>
+
+            </div>
+
+
+            <div class="flow-line"></div>
+
+
+            <div class="flow-step">
+
+                <div class="flow-number">05</div>
+
+                <i class="fa-solid fa-database"></i>
+
+                <strong>Cloud Storage</strong>
+
+                <small>Securely stored</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DASHBOARD PAGE
+===================================================== -->
+
+<section id="dashboardPage" class="page-section">
+
+
+    <div id="dashboardLoading" class="loading-card">
+
+        <div class="loader"></div>
+
+        <h3>Loading Security Dashboard</h3>
+
+        <p>
+            Securely retrieving dashboard information...
+        </p>
+
+    </div>
+
+
+    <div id="dashboardContent" class="dashboard-hidden">
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+
+                    <span>Total Secure Records</span>
+
+                    <strong id="totalUsers">
+                        0
+                    </strong>
+
+                    <small>
+                        Encrypted user records
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon red">
+                    <i class="fa-solid fa-shield-virus"></i>
+                </div>
+
+                <div>
+
+                    <span>SQL Attacks Blocked</span>
+
+                    <strong id="sqlAttacks">
+                        0
+                    </strong>
+
+                    <small>
+                        Injection attempts
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+
+                <div>
+
+                    <span>Unauthorized Attempts</span>
+
+                    <strong id="unauthorizedAttempts">
+                        0
+                    </strong>
+
+                    <small>
+                        Access violations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-shield-check"></i>
+                </div>
+
+                <div>
+
+                    <span>Security Events</span>
+
+                    <strong id="securityEvents">
+                        0
+                    </strong>
+
+                    <small>
+                        Total monitored events
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DASHBOARD CHARTS -->
+
+        <div class="dashboard-grid">
+
+
+            <div class="dashboard-card chart-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span>THREAT OVERVIEW</span>
+
+                        <h3>Security Activity</h3>
+
+                    </div>
+
+                    <div class="chart-badge">
+                        Live Data
+                    </div>
+
+                </div>
+
+                <div class="chart-wrapper">
+
+                    <canvas id="securityChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card protection-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <span>SYSTEM STATUS</span>
+
+                        <h3>Protection Layers</h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="protection-list">
+
+
+                    <div class="protection-item">
+
+                        <div class="protection-symbol blue">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                        </div>
+
+                        <div class="protection-text">
+
+                            <strong>SQL Detection</strong>
+
+                            <span>Threat scanning enabled</span>
+
+                        </div>
+
+                        <b>ACTIVE</b>
+
+                    </div>
+
+
+                    <div class="protection-item">
+
+                        <div class="protection-symbol purple">
+
+                            <i class="fa-solid fa-key"></i>
+
+                        </div>
+
+                        <div class="protection-text">
+
+                            <strong>Capability Code</strong>
+
+                            <span>Authorization enabled</span>
+
+                        </div>
+
+                        <b>ACTIVE</b>
+
+                    </div>
+
+
+                    <div class="protection-item">
+
+                        <div class="protection-symbol green">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                        </div>
+
+                        <div class="protection-text">
+
+                            <strong>AES-256</strong>
+
+                            <span>Data encryption enabled</span>
+
+                        </div>
+
+                        <b>ACTIVE</b>
+
+                    </div>
+
+
+                    <div class="protection-item">
+
+                        <div class="protection-symbol orange">
+
+                            <i class="fa-solid fa-cloud"></i>
+
+                        </div>
+
+                        <div class="protection-text">
+
+                            <strong>MongoDB Atlas</strong>
+
+                            <span>Cloud storage enabled</span>
+
+                        </div>
+
+                        <b>ACTIVE</b>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT RECORDS -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span>DATABASE MONITOR</span>
+
+                    <h3>Recent Secure Records</h3>
+
+                </div>
+
+                <div class="secure-label">
+
+                    <i class="fa-solid fa-lock"></i>
+                    Sensitive fields hidden
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="security-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Record ID</th>
+                            <th>Security Status</th>
+                            <th>Created</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recordsTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ATTACK LOG -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span>THREAT MONITOR</span>
+
+                    <h3>Recent Security Events</h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="security-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Event</th>
+                            <th>Source</th>
+                            <th>Timestamp</th>
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="attackTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     REGISTRATION PAGE
+===================================================== -->
+
+<section id="registerPage" class="page-section">
+
+    <div class="registration-layout">
+
+
+        <div class="registration-info">
+
+            <div class="hero-badge">
+
+                <i class="fa-solid fa-user-shield"></i>
+
+                SECURE DATA REGISTRATION
+
+            </div>
+
+
+            <h2>
+                Store sensitive data
+                <span>the secure way.</span>
+            </h2>
+
+
+            <p>
+                Every registration request passes through multiple
+                security layers before reaching the cloud database.
+            </p>
+
+
+            <div class="registration-points">
+
+                <div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        SQL injection detection
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        Capability-code verification
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        AES-256-GCM encryption
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <span>
+                        Secure MongoDB Atlas storage
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="register-card">
+
+            <div class="form-header">
+
+                <div class="form-icon">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>Create Secure Record</h3>
+
+                    <p>
+                        Your sensitive data is encrypted before storage.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="registerForm">
+
+
+                <div class="input-group-custom">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your name"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group-custom">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group-custom">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-key"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter password"
+                            required>
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()">
+
+                            <i
+                                id="passwordIcon"
+                                class="fa-solid fa-eye">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="input-group-custom">
+
+                    <label>
+                        Capability Code
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-solid fa-fingerprint"></i>
+
+                        <input
+                            type="password"
+                            id="capability_code"
+                            name="capability_code"
+                            placeholder="Enter security capability code"
+                            required>
+
+                    </div>
+
+                    <small class="input-hint">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        Required for authorization.
+
+                    </small>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="submitBtn">
+
+                    <span id="submitText">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        Secure & Store Data
+
+                    </span>
+
+                    <span
+                        id="submitLoader"
+                        class="button-loader hidden">
+
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+
+                        Processing...
+
+                    </span>
+
+                </button>
+
+
+                <div
+                    id="formMessage"
+                    class="form-message">
+                </div>
+
+
+            </form>
+
+
+            <div class="form-security-note">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <span>
+                    Your sensitive credentials are never displayed
+                    in the dashboard.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SECURITY CENTER
+===================================================== -->
+
+<section id="securityPage" class="page-section">
+
+
+    <div class="security-header-card">
+
+        <div>
+
+            <div class="hero-badge">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                SECURITY CENTER
+
+            </div>
+
+            <h2>
+                Multi-layer protection
+                <span>is active.</span>
+            </h2>
+
+            <p>
+                SQLShield uses independent security mechanisms
+                to protect sensitive information.
+            </p>
+
+        </div>
+
+
+        <div class="large-security-icon">
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+        </div>
+
+    </div>
+
+
+    <div class="security-detail-grid">
+
+
+        <div class="security-detail-card">
+
+            <div class="detail-number">
+                01
+            </div>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <h3>SQL Injection Detection</h3>
+
+            <p>
+                Incoming form fields are inspected against
+                suspicious SQL syntax and common injection
+                techniques.
+            </p>
+
+            <div class="detail-tag">
+                Pattern Based Detection
+            </div>
+
+        </div>
+
+
+        <div class="security-detail-card">
+
+            <div class="detail-number">
+                02
+            </div>
+
+            <i class="fa-solid fa-key"></i>
+
+            <h3>Capability Verification</h3>
+
+            <p>
+                A secret capability code provides a second
+                authorization layer before data is accepted.
+            </p>
+
+            <div class="detail-tag">
+                Authorization Layer
+            </div>
+
+        </div>
+
+
+        <div class="security-detail-card">
+
+            <div class="detail-number">
+                03
+            </div>
+
+            <i class="fa-solid fa-lock"></i>
+
+            <h3>AES-256-GCM Encryption</h3>
+
+            <p>
+                Sensitive credentials are encrypted using
+                authenticated AES-256-GCM encryption before
+                database storage.
+            </p>
+
+            <div class="detail-tag">
+                Data Protection
+            </div>
+
+        </div>
+
+
+        <div class="security-detail-card">
+
+            <div class="detail-number">
+                04
+            </div>
+
+            <i class="fa-solid fa-cloud"></i>
+
+            <h3>Cloud Storage</h3>
+
+            <p>
+                MongoDB Atlas stores encrypted user records
+                and security events in a cloud database.
+            </p>
+
+            <div class="detail-tag">
+                MongoDB Atlas
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="developer-banner">
+
+        <div class="developer-big-icon">
+
+            <i class="fa-solid fa-code"></i>
+
+        </div>
+
+        <div>
+
+            <span>PROJECT DEVELOPED BY</span>
+
+            <h2>Sunny Kumar</h2>
+
+            <p>
+                SQL Injection Detection & Secure Data Protection System
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="main-footer">
+
+    <div>
+
+        <strong>
+            SQLShield
+        </strong>
+
+        <span>
+            • Secure Data Protection System
+        </span>
+
+    </div>
+
+    <div>
+        Developed by <strong>Sunny Kumar</strong>
+    </div>
+
+</footer>
+
+
+</main>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div id="toast" class="toast-message">
+
+    <div class="toast-icon">
+        <i id="toastIcon" class="fa-solid fa-check"></i>
+    </div>
+
+    <div>
+
+        <strong id="toastTitle">
+            Success
+        </strong>
+
+        <p id="toastText">
+            Operation completed.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+let dashboardLoaded = false;
+let securityChart = null;
+
+
+// =====================================================
+// PAGE NAVIGATION
+// =====================================================
+
+function showPage(page) {
+
+    const pages = {
+        home: "homePage",
+        dashboard: "dashboardPage",
+        register: "registerPage",
+        security: "securityPage"
+    };
+
+    const titles = {
+        home: [
+            "Security Overview",
+            "Intelligent SQL injection detection and secure data protection."
+        ],
+
+        dashboard: [
+            "Security Dashboard",
+            "Real-time security statistics and protected records."
+        ],
+
+        register: [
+            "Secure Registration",
+            "Create an encrypted and protected user record."
+        ],
+
+        security: [
+            "Security Center",
+            "Explore the protection layers behind SQLShield."
+        ]
+    };
+
+
+    Object.values(pages).forEach(id => {
+
+        document.getElementById(id)
+            .classList.remove("active-page");
+
+    });
+
+
+    document.getElementById(pages[page])
+        .classList.add("active-page");
+
+
+    document.querySelectorAll(".nav-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
+            if (item.dataset.page === page) {
+                item.classList.add("active");
+            }
+
+        });
+
+
+    document.getElementById("pageTitle").textContent =
+        titles[page][0];
+
+    document.getElementById("pageSubtitle").textContent =
+        titles[page][1];
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    // IMPORTANT:
+    // Dashboard data is requested ONLY when Dashboard opens.
+
+    if (page === "dashboard") {
+
+        if (!dashboardLoaded) {
+            loadDashboard();
+        }
+
+    }
+
+
+    closeSidebarOnMobile();
+}
+
+
+// =====================================================
+// LOAD DASHBOARD
+// =====================================================
+
+async function loadDashboard() {
+
+    const loading =
+        document.getElementById("dashboardLoading");
+
+    const content =
+        document.getElementById("dashboardContent");
+
+
+    loading.style.display = "flex";
+
+    content.classList.add("dashboard-hidden");
+
+
+    try {
+
+        const response =
+            await fetch("/api/dashboard", {
+                method: "GET",
+                cache: "no-store"
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (!result.success) {
+
+            throw new Error(
+                result.message ||
+                "Dashboard could not be loaded."
+            );
+
+        }
+
+
+        renderDashboard(result.data);
+
+        dashboardLoaded = true;
+
+
+        loading.style.display = "none";
+
+        content.classList.remove("dashboard-hidden");
+
+
+    } catch (error) {
+
+        loading.innerHTML = `
+
+            <div class="error-icon">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+            </div>
+
+            <h3>Dashboard Unavailable</h3>
+
+            <p>${error.message}</p>
+
+            <button
+                class="primary-btn"
+                onclick="loadDashboard()">
+
+                <i class="fa-solid fa-rotate"></i>
+
+                Try Again
+
+            </button>
+
+        `;
+
+    }
+
+}
+
+
+// =====================================================
+// RENDER DASHBOARD
+// =====================================================
+
+function renderDashboard(data) {
+
+    const stats =
+        data.statistics || {};
+
+
+    document.getElementById("totalUsers")
+        .textContent =
+        stats.total_users || 0;
+
+
+    document.getElementById("sqlAttacks")
+        .textContent =
+        stats.sql_attacks || 0;
+
+
+    document.getElementById("unauthorizedAttempts")
+        .textContent =
+        stats.unauthorized_attempts || 0;
+
+
+    document.getElementById("securityEvents")
+        .textContent =
+        stats.security_events || 0;
+
+
+    renderRecords(
+        data.recent_users || []
+    );
+
+
+    renderAttackLogs(
+        data.recent_logs || []
+    );
+
+
+    renderChart(stats);
+
+}
+
+
+// =====================================================
+// RECORD TABLE
+// =====================================================
+
+function renderRecords(records) {
+
+    const table =
+        document.getElementById("recordsTable");
+
+
+    if (!records.length) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="4"
+                    class="empty-table">
+
+                    <i class="fa-solid fa-database"></i>
+
+                    <span>
+                        No secure records found yet.
+                    </span>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+        records.map(record => `
+
+            <tr>
+
+                <td>
+                    ${record.number}
+                </td>
+
+                <td>
+
+                    <span class="record-id">
+                        ${record.id}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <span class="status-pill secure">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        ${record.status}
+
+                    </span>
+
+                </td>
+
+                <td>
+                    ${record.created_at}
+                </td>
+
+            </tr>
+
+        `).join("");
+
+}
+
+
+// =====================================================
+// ATTACK LOG TABLE
+// =====================================================
+
+function renderAttackLogs(logs) {
+
+    const table =
+        document.getElementById("attackTable");
+
+
+    if (!logs.length) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="4"
+                    class="empty-table">
+
+                    <i class="fa-solid fa-shield-check"></i>
+
+                    <span>
+                        No security events recorded.
+                    </span>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+        logs.map(log => {
+
+            const isAttack =
+                log.attack_type ===
+                "SQL Injection Attempt";
+
+
+            return `
+
+                <tr>
+
+                    <td>
+
+                        <span class="
+                            event-pill
+                            ${isAttack ? "danger" : "warning"}
+                        ">
+
+                            <i class="
+                                fa-solid
+                                ${isAttack
+                                    ? "fa-shield-virus"
+                                    : "fa-user-lock"}
+                            "></i>
+
+                            ${log.attack_type}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${log.source}
+                    </td>
+
+                    <td>
+                        ${log.timestamp}
+                    </td>
+
+                    <td>
+
+                        <span class="
+                            status-pill
+                            ${isAttack ? "blocked" : "denied"}
+                        ">
+
+                            ${isAttack
+                                ? "BLOCKED"
+                                : "DENIED"}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+// =====================================================
+// CHART
+// =====================================================
+
+function renderChart(stats) {
+
+    const canvas =
+        document.getElementById("securityChart");
+
+
+    if (securityChart) {
+        securityChart.destroy();
+    }
+
+
+    securityChart =
+        new Chart(canvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Secure Records",
+                    "SQL Attacks",
+                    "Unauthorized"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        stats.total_users || 0,
+                        stats.sql_attacks || 0,
+                        stats.unauthorized_attempts || 0
+                    ],
+
+                    backgroundColor: [
+                        "#2dd4bf",
+                        "#f43f5e",
+                        "#f59e0b"
+                    ],
+
+                    borderWidth: 0,
+
+                    hoverOffset: 8
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "72%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            color: "#b8c4d8",
+
+                            padding: 20,
+
+                            usePointStyle: true
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+// =====================================================
+// REGISTRATION
+// =====================================================
+
+document
+    .getElementById("registerForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const submitBtn =
+            document.getElementById("submitBtn");
+
+        const submitText =
+            document.getElementById("submitText");
+
+        const submitLoader =
+            document.getElementById("submitLoader");
+
+
+        submitBtn.disabled = true;
+
+        submitText.classList.add("hidden");
+
+        submitLoader.classList.remove("hidden");
+
+
+        const payload = {
+
+            name:
+                document.getElementById("name").value,
+
+            email:
+                document.getElementById("email").value,
+
+            password:
+                document.getElementById("password").value,
+
+            capability_code:
+                document.getElementById(
+                    "capability_code"
+                ).value
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch("/register", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                });
+
+
+            const result =
+                await response.json();
+
+
+            showFormMessage(
+                result.message,
+                result.type
+            );
+
+
+            if (result.success) {
+
+                document
+                    .getElementById("registerForm")
+                    .reset();
+
+
+                dashboardLoaded = false;
+
+                showToast(
+                    "Data Secured",
+                    result.message,
+                    "success"
+                );
+
+            } else {
+
+                showToast(
+                    "Security Alert",
+                    result.message,
+                    result.type
+                );
+
+            }
+
+        } catch (error) {
+
+            showFormMessage(
+                "Unable to connect to the server.",
+                "danger"
+            );
+
+        }
+
+
+        submitBtn.disabled = false;
+
+        submitText.classList.remove("hidden");
+
+        submitLoader.classList.add("hidden");
+
+    });
+
+
+// =====================================================
+// FORM MESSAGE
+// =====================================================
+
+function showFormMessage(message, type) {
+
+    const box =
+        document.getElementById("formMessage");
+
+
+    const icons = {
+
+        success:
+            "fa-circle-check",
+
+        danger:
+            "fa-triangle-exclamation",
+
+        warning:
+            "fa-circle-exclamation"
+
+    };
+
+
+    box.className =
+        "form-message " + type;
+
+
+    box.innerHTML = `
+
+        <i class="fa-solid ${icons[type] || icons.warning}"></i>
+
+        <span>${message}</span>
+
+    `;
+
+}
+
+
+// =====================================================
+// TOAST
+// =====================================================
+
+function showToast(title, text, type) {
+
+    const toast =
+        document.getElementById("toast");
+
+
+    document.getElementById("toastTitle")
+        .textContent = title;
+
+
+    document.getElementById("toastText")
+        .textContent = text;
+
+
+    const icon =
+        document.getElementById("toastIcon");
+
+
+    if (type === "danger") {
+
+        icon.className =
+            "fa-solid fa-triangle-exclamation";
+
+    } else if (type === "warning") {
+
+        icon.className =
+            "fa-solid fa-circle-exclamation";
+
+    } else {
+
+        icon.className =
+            "fa-solid fa-check";
+
+    }
+
+
+    toast.classList.add("show");
+
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 4500);
+
+}
+
+
+// =====================================================
+// PASSWORD TOGGLE
+// =====================================================
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const icon =
+        document.getElementById("passwordIcon");
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        icon.className =
+            "fa-solid fa-eye-slash";
+
+    } else {
+
+        password.type = "password";
+
+        icon.className =
+            "fa-solid fa-eye";
+
+    }
+
+}
+
+
+// =====================================================
+// MOBILE SIDEBAR
+// =====================================================
+
+function toggleSidebar() {
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("sidebar-open");
+
+}
+
+
+function closeSidebarOnMobile() {
+
+    if (window.innerWidth <= 900) {
+
+        document
+            .getElementById("sidebar")
+            .classList.remove("sidebar-open");
+
+    }
+
+}
+
+
+// =====================================================
+// INITIAL PAGE
+// =====================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        showPage("home");
+
+    }
+);
+
+</script>
 
 
 </body>
-
 </html>

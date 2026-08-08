@@ -1,89 +1,53 @@
 import os
-from cryptography.fernet import Fernet
+import base64
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-# ==========================================
-# Load Encryption Key
-# ==========================================
+def get_aes_key():
 
-AES_KEY = os.getenv("AES_KEY")
+    key = os.getenv("AES_KEY")
 
-if not AES_KEY:
-    raise ValueError(
-        "AES_KEY is missing! Please add it to your .env file."
-    )
+    if not key:
+        raise RuntimeError(
+            "AES_KEY is missing from the .env file."
+        )
 
+    try:
+        decoded_key = base64.urlsafe_b64decode(key)
 
-try:
-    cipher = Fernet(AES_KEY.encode())
+    except Exception as error:
+        raise RuntimeError(
+            "AES_KEY is not valid Base64."
+        ) from error
 
-except Exception as error:
-    raise ValueError(
-        f"Invalid AES_KEY in .env: {error}"
-    )
+    if len(decoded_key) != 32:
+        raise RuntimeError(
+            "AES_KEY must decode to exactly 32 bytes for AES-256."
+        )
 
+    return decoded_key
 
-# ==========================================
-# Encrypt Data
-# ==========================================
 
 def encrypt_data(data):
-    """
-    Encrypts plain text using Fernet symmetric encryption.
 
-    Args:
-        data (str): Plain text
+    key = get_aes_key()
 
-    Returns:
-        str: Encrypted text
-    """
+    aes = AESGCM(key)
 
-    if data is None:
-        return ""
+    nonce = os.urandom(12)
 
-    encrypted = cipher.encrypt(
-        str(data).encode()
+    encrypted = aes.encrypt(
+        nonce,
+        str(data).encode("utf-8"),
+        None
     )
 
-    return encrypted.decode()
+    combined = nonce + encrypted
 
-
-# ==========================================
-# Decrypt Data
-# ==========================================
-
-def decrypt_data(data):
-    """
-    Decrypts encrypted text.
-
-    Args:
-        data (str): Encrypted text
-
-    Returns:
-        str: Original plain text
-    """
-
-    if not data:
-        return ""
-
-    decrypted = cipher.decrypt(
-        data.encode()
-    )
-
-    return decrypted.decode()
-
-
-# ==========================================
-# Encryption Status
-# ==========================================
-
-def encryption_status():
-    """
-    Returns True if encryption
-    is configured correctly.
-    """
-
-    return cipher is not None
+    return base64.urlsafe_b64encode(
+        combined
+    ).decode("utf-8")

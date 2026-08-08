@@ -464,17 +464,20 @@ Future improvements:
 
 # 📸 Screenshots
 
-
-Add screenshots of:
-
-
 1. 🏠 Home Page
+      lt text](homepage.png)
 
 2. ✅ Secure Registration Success
+      ![alt text](secureregistration.png)
 
-3. 🚨 SQL Injection Detection Alert
+3. ❌ Invalid Capability Code
+      ![alt text](invalidcapabilitycode.png)
 
-4. 📊 Security Dashboard
+4. 🚨 SQL Injection Detection Alert
+      ![alt text](sqlinjectionattackeddetected.png)
+
+5. 📊 Security Dashboard
+      ![alt text](dashboard.png)
 
 
 
@@ -516,4 +519,4 @@ This project demonstrates practical implementation of:
 
 ### Security First Approach 🛡️
 
-</div>
+</div>      

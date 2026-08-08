@@ -1,96 +1,48 @@
 import re
 
 
-# Advanced SQL Injection Detection Patterns
-
 SQL_ATTACK_PATTERNS = [
 
-    # Authentication bypass attacks
-    r"(\bor\b|\band\b)\s+\d+\s*=\s*\d+",
-    r"(\bor\b|\band\b)\s+['\"]?\w+['\"]?\s*=\s*['\"]?\w+['\"]?",
+    # OR / AND based injection
+    r"(?i)\bOR\s+['\"]?\w+['\"]?\s*=\s*['\"]?\w+",
+    r"(?i)\bAND\s+['\"]?\w+['\"]?\s*=\s*['\"]?\w+",
 
-    # UNION based attacks
-    r"union\s+select",
-    r"union\s+all\s+select",
+    # UNION attacks
+    r"(?i)\bUNION\s+(ALL\s+)?SELECT\b",
 
     # Database manipulation
-    r"drop\s+table",
-    r"delete\s+from",
-    r"insert\s+into",
-    r"update\s+\w+\s+set",
+    r"(?i)\bDROP\s+(TABLE|DATABASE)\b",
+    r"(?i)\bDELETE\s+FROM\b",
+    r"(?i)\bINSERT\s+INTO\b",
+    r"(?i)\bUPDATE\s+\w+\s+SET\b",
 
     # SQL comments
-    r"--",
-    r"/\*.*\*/",
+    r"(--|/\*|\*/|#)",
 
-    # Query termination
-    r";",
+    # Common SQL functions
+    r"(?i)\bEXEC(\s|\()",
+    r"(?i)\bXP_CMDSHELL\b",
 
-    # Common injection characters
-    r"'.*or.*'",
-    r"'.*--",
+    # Information schema
+    r"(?i)\bINFORMATION_SCHEMA\b",
 
-    # Information extraction
-    r"information_schema",
-    r"sleep\s*\(",
-    r"benchmark\s*\(",
-
-    # Admin bypass
-    r"admin\s*['\"]?\s*=",
-
+    # Stacked query pattern
+    r";\s*(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE)\b"
 ]
 
 
-def detect_sql_injection(user_input):
+def detect_sql_injection(value):
 
-    if not user_input:
+    if value is None:
         return False
 
+    value = str(value).strip()
 
-    user_input = user_input.lower()
-
+    if not value:
+        return False
 
     for pattern in SQL_ATTACK_PATTERNS:
-
-        if re.search(
-            pattern,
-            user_input,
-            re.IGNORECASE
-        ):
+        if re.search(pattern, value):
             return True
 
-
     return False
-
-
-
-def get_attack_type(user_input):
-
-    if not user_input:
-        return "Unknown"
-
-
-    user_input = user_input.lower()
-
-
-    if "union select" in user_input:
-        return "UNION Based SQL Injection"
-
-
-    if "drop table" in user_input:
-        return "Database Destruction Attempt"
-
-
-    if "--" in user_input:
-        return "SQL Comment Injection"
-
-
-    if " or " in user_input:
-        return "Authentication Bypass"
-
-
-    if ";" in user_input:
-        return "Query Manipulation"
-
-
-    return "Suspicious SQL Pattern"
