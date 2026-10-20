@@ -31,9 +31,11 @@ services:
       # Secrets are supplied through the Render dashboard, never in this file.
       - key: MONGO_URI
         sync: false
-      - key: CAPABILITY_CODE
+      - key: CAPABILITY_CODES
         sync: false
       - key: AES_KEYS
+        sync: false
+      - key: FINGERPRINT_KEY
         sync: false
       - key: ACTIVE_KEY_ID
         value: v1
