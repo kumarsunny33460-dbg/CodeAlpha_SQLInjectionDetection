@@ -1,53 +1,66 @@
-import os
-import base64
+"""Compatibility shim for the original ``encryption`` module.
 
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+The cryptographic implementation now lives in :mod:`sqlshield.security.crypto`.
+``encrypt_data`` keeps its original signature: it accepts a plaintext string
+and returns a base64 encoded, authenticated ciphertext.
+"""
+
+from __future__ import annotations
+
 from dotenv import load_dotenv
+
+from sqlshield.config import resolve_config
+from sqlshield.security.crypto import (
+    CryptoError,
+    KeyVault,
+    constant_time_equals,
+    generate_key,
+    hash_password,
+    verify_password,
+)
 
 load_dotenv()
 
+_config = resolve_config()
 
-def get_aes_key():
-
-    key = os.getenv("AES_KEY")
-
-    if not key:
-        raise RuntimeError(
-            "AES_KEY is missing from the .env file."
-        )
-
-    try:
-        decoded_key = base64.urlsafe_b64decode(key)
-
-    except Exception as error:
-        raise RuntimeError(
-            "AES_KEY is not valid Base64."
-        ) from error
-
-    if len(decoded_key) != 32:
-        raise RuntimeError(
-            "AES_KEY must decode to exactly 32 bytes for AES-256."
-        )
-
-    return decoded_key
+_vault: KeyVault | None = None
 
 
-def encrypt_data(data):
+def get_vault() -> KeyVault:
+    """Return the process wide key vault."""
+    global _vault
 
-    key = get_aes_key()
+    if _vault is None:
+        _vault = KeyVault.from_config(_config)
 
-    aes = AESGCM(key)
+    return _vault
 
-    nonce = os.urandom(12)
 
-    encrypted = aes.encrypt(
-        nonce,
-        str(data).encode("utf-8"),
-        None
-    )
+def get_aes_key() -> bytes:
+    """Return the active encryption key as raw bytes."""
+    vault = get_vault()
+    vault.require_keys()
+    return vault.keys[vault.active_key_id]
 
-    combined = nonce + encrypted
 
-    return base64.urlsafe_b64encode(
-        combined
-    ).decode("utf-8")
+def encrypt_data(data) -> str:
+    """Encrypt ``data`` and return the base64 envelope."""
+    return get_vault().encrypt(data)
+
+
+def decrypt_data(token) -> str:
+    """Decrypt a value produced by :func:`encrypt_data`."""
+    return get_vault().decrypt(token)
+
+
+__all__ = [
+    "CryptoError",
+    "constant_time_equals",
+    "decrypt_data",
+    "encrypt_data",
+    "generate_key",
+    "get_aes_key",
+    "get_vault",
+    "hash_password",
+    "verify_password",
+]

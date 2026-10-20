@@ -1,0 +1,44 @@
+# ===================================================================
+# Fly.io deployment configuration for SQLShield
+# https://fly.io/docs/reference/configuration/
+# ===================================================================
+
+app = "sqlshield"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8000"
+  FLASK_ENV = "production"
+  LOG_LEVEL = "INFO"
+  LOG_JSON = "true"
+  TRUSTED_PROXY_COUNT = "1"
+  ACTIVE_KEY_ID = "v1"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/health/live"
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/health/ready"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

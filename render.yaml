@@ -1,0 +1,39 @@
+# ===================================================================
+# Render blueprint for SQLShield
+# https://render.com/docs/blueprint-spec
+# ===================================================================
+
+services:
+  - type: web
+    name: sqlshield
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --config deploy/gunicorn.conf.py wsgi:application
+    healthCheckPath: /health/live
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: FLASK_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_JSON
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: TRUSTED_PROXY_COUNT
+        value: "1"
+      # Secrets are supplied through the Render dashboard, never in this file.
+      - key: MONGO_URI
+        sync: false
+      - key: CAPABILITY_CODE
+        sync: false
+      - key: AES_KEYS
+        sync: false
+      - key: ACTIVE_KEY_ID
+        value: v1

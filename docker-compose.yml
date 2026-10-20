@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      FLASK_ENV: production
+      PORT: "8000"
+      MONGO_URI: mongodb://mongo:27017
+      DATABASE_NAME: SQLInjectionSecurity
+      COLLECTION_NAME: SecureUsers
+      EVENTS_COLLECTION: AttackLogs
+      # Provide real values through a .env file or your secret manager.
+      CAPABILITY_CODES: ${CAPABILITY_CODES:-}
+      AES_KEYS: ${AES_KEYS:-}
+      ACTIVE_KEY_ID: ${ACTIVE_KEY_ID:-v1}
+      LOG_JSON: "true"
+      LOG_LEVEL: INFO
+      TRUSTED_PROXY_COUNT: "0"
+    env_file:
+      - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+    # The image ships its own HEALTHCHECK based on the Python standard
+    # library, so no extra tooling is needed inside the container.
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: SQLInjectionSecurity
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  mongo_data:

@@ -223,8 +223,6 @@
         </p>
 
     </div>
-
-
     <div class="header-security">
 
         <div class="security-pulse">
@@ -232,14 +230,53 @@
             <span></span>
 
             <div>
-                <strong>Protection Active</strong>
-                <small>Real-time monitoring</small>
+
+                <strong id="protectionLabel">Protection Active</strong>
+
+                <small id="protectionDetail">Checking system status...</small>
+
+            </div>
+
+        </div>
+
+
+        <div class="status-strip" id="statusStrip">
+
+            <div class="status-item" id="dbStatusItem">
+
+                <i class="fa-solid fa-database"></i>
+
+                <span>Database</span>
+
+                <b id="dbStatus">Checking</b>
+
+            </div>
+
+
+            <div class="status-item" id="encStatusItem">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <span>Encryption</span>
+
+                <b id="encStatus">Checking</b>
+
+            </div>
+
+
+            <div class="status-item">
+
+                <i class="fa-solid fa-fingerprint"></i>
+
+                <span>Request ID</span>
+
+                <b id="requestIdLabel">-</b>
+
             </div>
 
         </div>
 
     </div>
-
 </div>
 
 
@@ -702,6 +739,30 @@
                         Live Data
                     </div>
 
+                    <div class="chart-tools">
+
+                        <button
+                            class="tool-btn"
+                            id="refreshBtn"
+                            onclick="refreshDashboard(true)"
+                            title="Refresh the dashboard">
+
+                            <i class="fa-solid fa-rotate"></i>
+
+                        </button>
+
+                        <button
+                            class="tool-btn active"
+                            id="autoRefreshBtn"
+                            onclick="toggleAutoRefresh()"
+                            title="Toggle automatic refreshing">
+
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+
+                        </button>
+
+                    </div>
+
                 </div>
 
                 <div class="chart-wrapper">
@@ -815,6 +876,94 @@
                     </div>
 
                 </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TIMELINE -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span>THREAT TIMELINE</span>
+
+                    <h3>Security Activity - Last 7 Days</h3>
+
+                </div>
+
+                <div class="chart-badge">
+
+                    Daily Events
+
+                </div>
+
+            </div>
+
+            <div class="chart-wrapper chart-wrapper-timeline">
+
+                <canvas id="timelineChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- LIVE FEED -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span>LIVE MONITOR</span>
+
+                    <h3>Threat Feed</h3>
+
+                </div>
+
+                <div class="secure-label">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    Payloads are never exposed
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="security-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Event</th>
+
+                            <th>Category</th>
+
+                            <th>Severity</th>
+
+                            <th>Source</th>
+
+                            <th>Timestamp</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="liveFeedTable">
+
+                    </tbody>
+
+                </table>
 
             </div>
 
@@ -1327,6 +1476,80 @@
     </div>
 
 
+    <!-- THREAT SCANNER -->
+
+    <div class="scanner-card">
+
+        <div class="scanner-copy">
+
+            <div class="hero-badge">
+
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+                INTERACTIVE THREAT SCANNER
+
+            </div>
+
+            <h3>Test the detection engine</h3>
+
+            <p>
+                Paste any input to see how SQLShield scores it. The payload is
+                analysed in memory and is never stored.
+            </p>
+
+            <form id="scannerForm" onsubmit="return runScanner(event)">
+
+                <div class="scanner-input-row">
+
+                    <input
+                        type="text"
+                        id="scannerValue"
+                        placeholder="e.g. ' OR '1'='1"
+                        autocomplete="off">
+
+                    <select id="scannerField">
+
+                        <option value="name">Name</option>
+
+                        <option value="email">Email</option>
+
+                        <option value="password">Password</option>
+
+                        <option value="capability_code">Capability</option>
+
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="scannerBtn">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        Scan
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <div class="scanner-result" id="scannerResult">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                <span>
+                    Run a scan to see the risk score, the matched rules and
+                    the severity of the input.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
     <div class="developer-banner">
 
         <div class="developer-big-icon">
@@ -1414,6 +1637,11 @@
 
 let dashboardLoaded = false;
 let securityChart = null;
+let timelineChart = null;
+let autoRefreshTimer = null;
+let liveFeedTimer = null;
+let autoRefreshEnabled = true;
+let lastRequestId = "-";
 
 
 // =====================================================
@@ -1498,6 +1726,10 @@ function showPage(page) {
             loadDashboard();
         }
 
+        startLiveFeed();
+
+        startAutoRefresh();
+
     }
 
 
@@ -1506,10 +1738,203 @@ function showPage(page) {
 
 
 // =====================================================
+// SYSTEM HEALTH
+// =====================================================
+
+async function checkHealth() {
+
+    try {
+
+        const response =
+            await fetch("/health/ready", {
+                method: "GET",
+                cache: "no-store"
+            });
+
+        const result = await response.json();
+        const data = result.data || {};
+
+        const dbLabel = document.getElementById("dbStatus");
+        const encLabel = document.getElementById("encStatus");
+        const dbItem = document.getElementById("dbStatusItem");
+        const encItem = document.getElementById("encStatusItem");
+
+        const connected = Boolean(data.database && data.database.connected);
+
+        dbLabel.textContent = connected ? "Connected" : "Degraded";
+        dbItem.classList.toggle("ok", connected);
+        dbItem.classList.toggle("down", !connected);
+
+        const encrypted = Boolean(data.encryption && data.encryption.configured);
+
+        encLabel.textContent = encrypted ? "AES-256" : "Not configured";
+        encItem.classList.toggle("ok", encrypted);
+        encItem.classList.toggle("down", !encrypted);
+
+        const protection =
+            document.getElementById("protectionLabel");
+
+        const detail =
+            document.getElementById("protectionDetail");
+
+        if (connected && encrypted) {
+            protection.textContent = "Protection Active";
+            detail.textContent = "All layers operational";
+        } else {
+            protection.textContent = "Degraded Mode";
+            detail.textContent = "One or more layers are offline";
+        }
+
+    } catch (error) {
+
+        const dbLabel = document.getElementById("dbStatus");
+        dbLabel.textContent = "Unreachable";
+        document.getElementById("dbStatusItem")
+            .classList.add("down");
+
+    }
+
+}
+
+
+// =====================================================
+// LIVE THREAT FEED
+// =====================================================
+
+function startLiveFeed() {
+
+    if (liveFeedTimer) {
+        return;
+    }
+
+    loadLiveFeed();
+
+    liveFeedTimer = setInterval(loadLiveFeed, 15000);
+
+}
+
+
+async function loadLiveFeed() {
+
+    try {
+
+        const response =
+            await fetch("/api/v1/security/events?limit=10", {
+                method: "GET",
+                cache: "no-store"
+            });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            return;
+        }
+
+        renderLiveFeed(result.data.events || []);
+
+    } catch (error) {
+
+        // The feed is decorative: a failure must never break the page.
+
+    }
+
+}
+
+
+function renderLiveFeed(events) {
+
+    const table = document.getElementById("liveFeedTable");
+
+    if (!table) {
+        return;
+    }
+
+    if (!events.length) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td colspan="5" class="empty-table">
+
+                    <i class="fa-solid fa-shield-check"></i>
+
+                    <span>No security events recorded.</span>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+    table.innerHTML =
+        events.map(event => {
+
+            const severity = (event.severity || "info").toLowerCase();
+
+            const attack =
+                event.event_type === "sql_injection";
+
+            const icon =
+                attack
+                    ? "fa-shield-virus"
+                    : "fa-user-lock";
+
+            const pill =
+                attack
+                    ? "danger"
+                    : "warning";
+
+            return `
+
+                <tr>
+
+                    <td>
+
+                        <span class="event-pill ${pill}">
+
+                            <i class="fa-solid ${icon}"></i>
+
+                            ${event.attack_type}
+
+                        </span>
+
+                    </td>
+
+                    <td>${event.category || "-"}</td>
+
+                    <td>
+
+                        <span class="status-pill severity-${severity}">
+
+                            ${severity.toUpperCase()}
+
+                        </span>
+
+                    </td>
+
+                    <td>${event.source}</td>
+
+                    <td>${event.timestamp}</td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+}
+
+
+// =====================================================
 // LOAD DASHBOARD
 // =====================================================
 
-async function loadDashboard() {
+async function loadDashboard(manual = false) {
 
     const loading =
         document.getElementById("dashboardLoading");
@@ -1518,15 +1943,16 @@ async function loadDashboard() {
         document.getElementById("dashboardContent");
 
 
-    loading.style.display = "flex";
-
-    content.classList.add("dashboard-hidden");
+    if (manual) {
+        loading.style.display = "flex";
+        content.classList.add("dashboard-hidden");
+    }
 
 
     try {
 
         const response =
-            await fetch("/api/dashboard", {
+            await fetch("/api/v1/dashboard", {
                 method: "GET",
                 cache: "no-store"
             });
@@ -1572,7 +1998,7 @@ async function loadDashboard() {
 
             <button
                 class="primary-btn"
-                onclick="loadDashboard()">
+                onclick="loadDashboard(true)">
 
                 <i class="fa-solid fa-rotate"></i>
 
@@ -1583,6 +2009,51 @@ async function loadDashboard() {
         `;
 
     }
+
+}
+
+
+// =====================================================
+// REFRESH CONTROLS
+// =====================================================
+
+function refreshDashboard(manual = false) {
+
+    loadDashboard(manual);
+
+    loadLiveFeed();
+
+    checkHealth();
+
+}
+
+
+function startAutoRefresh() {
+
+    if (!autoRefreshEnabled || autoRefreshTimer) {
+        return;
+    }
+
+    autoRefreshTimer = setInterval(refreshDashboard, 15000);
+
+}
+
+
+function toggleAutoRefresh() {
+
+    const button =
+        document.getElementById("autoRefreshBtn");
+
+    autoRefreshEnabled = !autoRefreshEnabled;
+
+    button.classList.toggle("active", autoRefreshEnabled);
+
+    if (autoRefreshTimer) {
+        clearInterval(autoRefreshTimer);
+        autoRefreshTimer = null;
+    }
+
+    startAutoRefresh();
 
 }
 
@@ -1628,6 +2099,141 @@ function renderDashboard(data) {
 
 
     renderChart(stats);
+
+
+    renderTimeline(
+        data.timeline || []
+    );
+
+
+    updateSystemStatus(
+        data.system || {}
+    );
+
+}
+
+
+// =====================================================
+// SYSTEM STATUS FROM THE DASHBOARD
+// =====================================================
+
+function updateSystemStatus(system) {
+
+    const dbLabel = document.getElementById("dbStatus");
+    const dbItem = document.getElementById("dbStatusItem");
+
+    if (!dbLabel || !dbItem) {
+        return;
+    }
+
+    const connected = Boolean(system.database_connected);
+
+    dbLabel.textContent = connected ? "Connected" : "Degraded";
+    dbItem.classList.toggle("ok", connected);
+    dbItem.classList.toggle("down", !connected);
+
+}
+
+
+// =====================================================
+// TIMELINE CHART
+// =====================================================
+
+function renderTimeline(timeline) {
+
+    const canvas =
+        document.getElementById("timelineChart");
+
+    if (!canvas) {
+        return;
+    }
+
+    if (timelineChart) {
+        timelineChart.destroy();
+    }
+
+    const labels = timeline.length
+        ? timeline.map(row => row.date)
+        : ["No data"];
+
+    const values = timeline.length
+        ? timeline.map(row => row.total)
+        : [0];
+
+
+    timelineChart =
+        new Chart(canvas, {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [{
+
+                    data: values,
+
+                    borderColor: "#38bdf8",
+
+                    backgroundColor:
+                        "rgba(56, 189, 248, 0.18)",
+
+                    fill: true,
+
+                    tension: 0.35,
+
+                    pointBackgroundColor: "#38bdf8",
+
+                    pointRadius: 4,
+
+                    pointHoverRadius: 6
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+                        ticks: {
+                            color: "#64748b"
+                        },
+                        grid: {
+                            color: "rgba(148, 163, 184, 0.08)"
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#64748b",
+                            precision: 0
+                        },
+                        grid: {
+                            color: "rgba(148, 163, 184, 0.08)"
+                        }
+                    }
+
+                }
+
+            }
+
+        });
 
 }
 
@@ -1945,7 +2551,7 @@ document
         try {
 
             const response =
-                await fetch("/register", {
+                await fetch("/api/v1/register", {
 
                     method: "POST",
 
@@ -1958,6 +2564,14 @@ document
                         JSON.stringify(payload)
 
                 });
+
+
+            lastRequestId =
+                response.headers.get("X-Request-ID") || "-";
+
+            document.getElementById("requestIdLabel")
+                .textContent =
+                lastRequestId.slice(0, 8);
 
 
             const result =
@@ -2164,6 +2778,157 @@ function closeSidebarOnMobile() {
 
 
 // =====================================================
+// THREAT SCANNER
+// =====================================================
+
+async function runScanner(event) {
+
+    event.preventDefault();
+
+    const input =
+        document.getElementById("scannerValue");
+
+    const field =
+        document.getElementById("scannerField");
+
+    const resultBox =
+        document.getElementById("scannerResult");
+
+    const button =
+        document.getElementById("scannerBtn");
+
+    const value = input.value.trim();
+
+    if (!value) {
+
+        resultBox.className = "scanner-result warning";
+        resultBox.innerHTML = `
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Enter a value to scan.</span>
+        `;
+
+        return false;
+
+    }
+
+    button.disabled = true;
+
+    try {
+
+        const response =
+            await fetch("/api/v1/security/detect", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    value: value,
+                    field: field.value
+                })
+
+            });
+
+        const result = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.message || "Scan failed.");
+        }
+
+        renderScanResult(result.data);
+
+    } catch (error) {
+
+        resultBox.className = "scanner-result danger";
+        resultBox.innerHTML = `
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>${error.message}</span>
+        `;
+
+    } finally {
+
+        button.disabled = false;
+
+    }
+
+    return false;
+
+}
+
+
+function renderScanResult(data) {
+
+    const resultBox =
+        document.getElementById("scannerResult");
+
+    const blocked = Boolean(data.is_injection);
+
+    const severity =
+        (data.severity || "none").toLowerCase();
+
+    resultBox.className =
+        `scanner-result ${blocked ? "danger" : "success"}`;
+
+    const rules =
+        (data.matched_rules || [])
+            .map(rule => `<code>${rule}</code>`)
+            .join(", ");
+
+    const categories =
+        (data.categories || [])
+            .join(", ") || "None";
+
+    resultBox.innerHTML = `
+
+        <div class="scanner-headline">
+
+            <i class="fa-solid ${blocked
+                ? "fa-shield-virus"
+                : "fa-shield-check"}"></i>
+
+            <strong>
+                ${blocked
+                    ? "Injection Detected"
+                    : "No Injection Detected"}
+            </strong>
+
+            <span class="status-pill severity-${severity}">
+                ${severity.toUpperCase()}
+            </span>
+
+            <span class="scanner-score">
+                Score ${data.score}
+            </span>
+
+        </div>
+
+        <div class="scanner-details">
+
+            <div>
+                <small>Field</small>
+                <span>${data.field || "-"}</span>
+            </div>
+
+            <div>
+                <small>Category</small>
+                <span>${categories}</span>
+            </div>
+
+            <div>
+                <small>Matched rules</small>
+                <span>${rules || "None"}</span>
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+// =====================================================
 // INITIAL PAGE
 // =====================================================
 
@@ -2172,6 +2937,8 @@ document.addEventListener(
     function() {
 
         showPage("home");
+
+        checkHealth();
 
     }
 );

@@ -2983,3 +2983,471 @@ body {
     }
 
 }
+
+
+/* =========================================================
+   LIVE STATUS STRIP
+========================================================= */
+
+.status-strip {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 10px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.status-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel);
+
+    font-size: 9px;
+
+    color: #64748b;
+
+}
+
+
+.status-item i {
+
+    color: #475569;
+
+}
+
+
+.status-item b {
+
+    color: var(--green);
+
+    font-size: 8px;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+}
+
+
+.status-item.ok i {
+
+    color: var(--green);
+
+}
+
+
+.status-item.down b {
+
+    color: var(--red);
+
+}
+
+
+.status-item.down i {
+
+    color: var(--red);
+
+}
+
+
+/* =========================================================
+   DASHBOARD TOOLS
+========================================================= */
+
+.chart-tools {
+
+    display: flex;
+
+    gap: 6px;
+
+    margin-left: 8px;
+
+}
+
+
+.tool-btn {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel);
+
+    color: #64748b;
+
+    cursor: pointer;
+
+    font-size: 10px;
+
+    transition: 0.2s ease;
+
+}
+
+
+.tool-btn:hover {
+
+    color: var(--green);
+
+    border-color: rgba(45,212,191,0.3);
+
+}
+
+
+.tool-btn.active {
+
+    color: var(--green);
+
+    background: rgba(45,212,191,0.08);
+
+    border-color: rgba(45,212,191,0.25);
+
+}
+
+
+.chart-wrapper-timeline {
+
+    height: 220px;
+
+}
+
+
+/* =========================================================
+   SEVERITY PILLS
+========================================================= */
+
+.status-pill.severity-critical,
+.status-pill.severity-high {
+
+    color: var(--red);
+
+    background: rgba(244,63,94,0.07);
+
+}
+
+
+.status-pill.severity-medium {
+
+    color: var(--orange);
+
+    background: rgba(245,158,11,0.07);
+
+}
+
+
+.status-pill.severity-low,
+.status-pill.severity-info {
+
+    color: var(--green);
+
+    background: rgba(45,212,191,0.07);
+
+}
+
+
+/* =========================================================
+   THREAT SCANNER
+========================================================= */
+
+.scanner-card {
+
+    margin-top: 16px;
+
+    padding: 28px;
+
+    border-radius: 20px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel);
+
+}
+
+
+.scanner-copy h3 {
+
+    margin: 14px 0 6px;
+
+    font-size: 20px;
+
+}
+
+
+.scanner-copy > p {
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    max-width: 620px;
+
+    line-height: 1.7;
+
+}
+
+
+.scanner-input-row {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.scanner-input-row input,
+.scanner-input-row select {
+
+    flex: 1 1 220px;
+
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    background: var(--bg);
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+
+}
+
+
+.scanner-input-row input:focus,
+.scanner-input-row select:focus {
+
+    border-color: rgba(45,212,191,0.45);
+
+    box-shadow: 0 0 0 3px rgba(45,212,191,0.08);
+
+}
+
+
+.scanner-input-row select {
+
+    flex: 0 0 150px;
+
+    cursor: pointer;
+
+}
+
+
+.scanner-input-row .primary-btn {
+
+    flex: 0 0 auto;
+
+    padding: 12px 22px;
+
+}
+
+
+.scanner-result {
+
+    margin-top: 16px;
+
+    padding: 14px 16px;
+
+    border-radius: 14px;
+
+    border: 1px solid var(--border);
+
+    background: rgba(148,163,184,0.04);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 11px;
+
+    color: #94a3b8;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+}
+
+
+.scanner-result.success {
+
+    border-color: rgba(45,212,191,0.25);
+
+    background: rgba(45,212,191,0.05);
+
+    color: var(--green);
+
+}
+
+
+.scanner-result.danger {
+
+    border-color: rgba(244,63,94,0.25);
+
+    background: rgba(244,63,94,0.05);
+
+    color: var(--red);
+
+}
+
+
+.scanner-result.warning {
+
+    border-color: rgba(245,158,11,0.25);
+
+    background: rgba(245,158,11,0.05);
+
+    color: var(--orange);
+
+}
+
+
+.scanner-headline {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    font-size: 12px;
+
+}
+
+
+.scanner-score {
+
+    margin-left: auto;
+
+    font-size: 10px;
+
+    letter-spacing: 0.5px;
+
+    text-transform: uppercase;
+
+    color: #64748b;
+
+}
+
+
+.scanner-details {
+
+    display: flex;
+
+    gap: 22px;
+
+    flex-wrap: wrap;
+
+    margin-top: 12px;
+
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+
+    width: 100%;
+
+}
+
+
+.scanner-details small {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 4px;
+
+}
+
+
+.scanner-details span {
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+}
+
+
+.scanner-details code {
+
+    display: inline-block;
+
+    padding: 2px 6px;
+
+    margin: 2px 3px 2px 0;
+
+    border-radius: 6px;
+
+    background: rgba(148,163,184,0.1);
+
+    color: #7dd3fc;
+
+    font-size: 10px;
+
+}
+
+
+@media (max-width: 900px) {
+
+    .status-strip {
+
+        display: none;
+    }
+
+    .scanner-card {
+
+        padding: 20px;
+    }
+
+}

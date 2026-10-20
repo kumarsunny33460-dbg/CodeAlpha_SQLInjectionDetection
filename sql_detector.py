@@ -1,48 +1,33 @@
-import re
+"""Compatibility shim for the original ``sql_detector`` module.
 
+The detection engine now lives in :mod:`sqlshield.security.detector`. The
+helper functions below keep the original import path and the boolean contract
+working for existing callers and scripts.
+"""
 
-SQL_ATTACK_PATTERNS = [
+from __future__ import annotations
 
-    # OR / AND based injection
-    r"(?i)\bOR\s+['\"]?\w+['\"]?\s*=\s*['\"]?\w+",
-    r"(?i)\bAND\s+['\"]?\w+['\"]?\s*=\s*['\"]?\w+",
+from sqlshield.security.detector import (
+    DetectionResult,
+    analyse,
+    analyse_fields,
+    detect_sql_injection,
+    normalize,
+    redact,
+    scan_payload,
+)
+from sqlshield.security.rules import RULES
 
-    # UNION attacks
-    r"(?i)\bUNION\s+(ALL\s+)?SELECT\b",
+#: The original module exposed the raw regular expressions.
+SQL_ATTACK_PATTERNS = [rule.pattern.pattern for rule in RULES]
 
-    # Database manipulation
-    r"(?i)\bDROP\s+(TABLE|DATABASE)\b",
-    r"(?i)\bDELETE\s+FROM\b",
-    r"(?i)\bINSERT\s+INTO\b",
-    r"(?i)\bUPDATE\s+\w+\s+SET\b",
-
-    # SQL comments
-    r"(--|/\*|\*/|#)",
-
-    # Common SQL functions
-    r"(?i)\bEXEC(\s|\()",
-    r"(?i)\bXP_CMDSHELL\b",
-
-    # Information schema
-    r"(?i)\bINFORMATION_SCHEMA\b",
-
-    # Stacked query pattern
-    r";\s*(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE)\b"
+__all__ = [
+    "DetectionResult",
+    "SQL_ATTACK_PATTERNS",
+    "analyse",
+    "analyse_fields",
+    "detect_sql_injection",
+    "normalize",
+    "redact",
+    "scan_payload",
 ]
-
-
-def detect_sql_injection(value):
-
-    if value is None:
-        return False
-
-    value = str(value).strip()
-
-    if not value:
-        return False
-
-    for pattern in SQL_ATTACK_PATTERNS:
-        if re.search(pattern, value):
-            return True
-
-    return False

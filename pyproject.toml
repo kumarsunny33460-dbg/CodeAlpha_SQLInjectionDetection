@@ -1,0 +1,94 @@
+[project]
+name = "sqlshield"
+version = "2.0.0"
+description = "SQL injection detection and secure data protection platform"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sunny Kumar" }]
+keywords = ["security", "sql-injection", "flask", "mongodb", "encryption"]
+classifiers = [
+    "Framework :: Flask",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+[project.urls]
+Homepage = "https://github.com/kumarsunny33460-dbg/CodeAlpha_SQLInjectionDetection"
+Repository = "https://github.com/kumarsunny33460-dbg/CodeAlpha_SQLInjectionDetection"
+
+[tool.ruff]
+line-length = 90
+target-version = "py312"
+extend-exclude = ["venv", ".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "N",    # pep8-naming
+]
+ignore = [
+    "E501",    # line length is handled by the formatter
+    "B008",    # Flask routes use function calls in defaults
+    "S101",    # assert is fine in tests
+    "SIM105",  # contextlib.suppress is slower than try/except here
+    "RET504",  # named results improve readability in this codebase
+    "ARG001",  # Flask view functions and hooks take unused arguments
+    "ARG002",
+    "PTH123",  # os.path is used for legacy compatibility shims
+    "N818",    # exception names without an Error suffix are intentional
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "ARG", "PLR2004"]
+"database.py" = ["S", "PTH"]
+"encryption.py" = ["S"]
+"capability.py" = ["S"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["sqlshield"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-q --strict-markers --disable-warnings"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["sqlshield"]
+branch = true
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+ignore_missing_imports = true
+follow_imports = "silent"
+show_error_codes = true
+exclude = ["venv", ".venv", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["flask_talisman.*", "flask_limiter.*", "flask_cors.*", "mongomock.*"]
+ignore_missing_imports = true
