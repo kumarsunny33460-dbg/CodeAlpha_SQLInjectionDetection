@@ -70,12 +70,22 @@ at that container.
 1. Push the repository to GitHub
 2. In Render, choose **New → Blueprint** and select the repository
 3. Render reads `render.yaml` and creates the web service
-4. Fill in the values marked `sync: false`: `MONGO_URI`, `CAPABILITY_CODE`
-   and `AES_KEYS`
+4. Fill in the values marked `sync: false`: `MONGO_URI`, `CAPABILITY_CODES`,
+   `AES_KEYS` and `FINGERPRINT_KEY`
 5. Deploy
 
 The service uses `gunicorn --config deploy/gunicorn.conf.py wsgi:application`
 and the health check path `/health/live`.
+
+To avoid transcribing the secrets by hand, print the values straight from your
+local `.env` with:
+
+```powershell
+./scripts/render-values.ps1
+```
+
+Reusing the same `AES_KEYS` and `FINGERPRINT_KEY` locally and on Render means
+the encrypted records stay readable in both places.
 
 ---
 
