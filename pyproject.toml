@@ -63,6 +63,10 @@ known-first-party = ["sqlshield"]
 minversion = "8.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+# Put the project root on sys.path so that "import sqlshield" resolves when
+# pytest is started as a bare command. Without this the suite only works
+# when it is launched as "python -m pytest".
+pythonpath = ["."]
 addopts = "-q --strict-markers --disable-warnings"
 filterwarnings = ["ignore::DeprecationWarning"]
 
