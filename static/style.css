@@ -2387,10 +2387,15 @@ body {
     margin-top: 18px;
 }
 
-
 .security-detail-card {
 
     position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
 
     padding: 23px;
 
@@ -2401,6 +2406,7 @@ body {
     background: var(--panel);
 
     overflow: hidden;
+
 }
 
 
@@ -2451,7 +2457,6 @@ body {
     margin-bottom: 9px;
 }
 
-
 .security-detail-card p {
 
     color: var(--muted);
@@ -2461,12 +2466,18 @@ body {
     line-height: 1.7;
 
     min-height: 85px;
-}
 
+    margin-bottom: 16px;
+
+}
 
 .detail-tag {
 
     display: inline-block;
+
+    align-self: flex-start;
+
+    margin-top: auto;
 
     padding: 5px 8px;
 
@@ -2474,11 +2485,12 @@ body {
 
     color: var(--cyan);
 
-    background: rgba(34,211,238,0.06);
+    background: rgba(34, 211, 238, 0.06);
 
     font-size: 7px;
 
     font-weight: 700;
+
 }
 
 
@@ -3448,6 +3460,359 @@ body {
     .scanner-card {
 
         padding: 20px;
+    }
+
+}
+
+
+/* =========================================================
+   DESIGN SYSTEM v2
+   Surfaces, elevation, motion and focus handling
+   ========================================================= */
+
+:root {
+
+    /* Surfaces */
+    --surface-1: rgba(15, 23, 42, 0.55);
+    --surface-2: rgba(19, 29, 49, 0.72);
+    --hairline: rgba(148, 163, 184, 0.16);
+    --ring: rgba(45, 212, 191, 0.6);
+
+    /* Radius scale */
+    --r-xs: 8px;
+    --r-sm: 12px;
+    --r-md: 16px;
+    --r-lg: 20px;
+    --r-xl: 26px;
+    --r-pill: 999px;
+
+    /* Motion */
+    --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+    --fast: 160ms var(--ease);
+    --smooth: 320ms var(--ease);
+
+    /* Elevation */
+    --lift:
+        0 22px 45px -24px rgba(0, 0, 0, 0.85);
+    --lift-strong:
+        0 30px 60px -26px rgba(0, 0, 0, 0.9);
+
+}
+
+
+/* --- Surfaces ------------------------------------------------ */
+
+.dashboard-card,
+.stat-card,
+.feature-card,
+.security-detail-card,
+.scanner-card,
+.security-header-card,
+.hero-card {
+
+    position: relative;
+
+    isolation: isolate;
+
+    transition:
+        transform var(--smooth),
+        border-color var(--smooth),
+        box-shadow var(--smooth);
+
+}
+
+
+/* A one pixel light line along the top edge gives the panels depth. */
+
+.dashboard-card::before,
+.feature-card::before,
+.security-detail-card::before,
+.scanner-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 12%;
+
+    right: 12%;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(56, 189, 248, 0.5),
+            transparent
+        );
+
+    opacity: 0.5;
+
+    transition: opacity var(--smooth);
+
+    pointer-events: none;
+
+}
+
+
+/* --- Elevation on hover --------------------------------------- */
+
+.stat-card:hover,
+.feature-card:hover,
+.security-detail-card:hover {
+
+    transform: translateY(-4px);
+
+    border-color: rgba(45, 212, 191, 0.26);
+
+    box-shadow: var(--lift);
+
+}
+
+
+.feature-card:hover::before,
+.security-detail-card:hover::before {
+
+    opacity: 1;
+
+}
+
+
+.stat-card:hover .stat-icon,
+.feature-card:hover .feature-icon {
+
+    transform: scale(1.06);
+
+    transition: transform var(--smooth);
+
+}
+
+
+/* --- Interactive rows ------------------------------------------ */
+
+.protection-item,
+.security-table tbody tr {
+
+    transition: background var(--fast);
+
+}
+
+
+.protection-item:hover {
+
+    background: rgba(148, 163, 184, 0.05);
+
+    border-radius: var(--r-sm);
+
+}
+
+
+.security-table tbody tr:hover {
+
+    background: rgba(148, 163, 184, 0.045);
+
+}
+
+
+/* --- Navigation ------------------------------------------------ */
+
+.nav-item {
+
+    position: relative;
+
+    transition:
+        color var(--fast),
+        background var(--fast);
+
+}
+
+
+.nav-item::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 50%;
+
+    width: 3px;
+
+    height: 0;
+
+    border-radius: var(--r-pill);
+
+    background: linear-gradient(180deg, var(--cyan), var(--blue));
+
+    transform: translateY(-50%);
+
+    transition: height var(--smooth);
+
+}
+
+
+.nav-item.active::before {
+
+    height: 22px;
+
+}
+
+
+/* --- Focus handling -------------------------------------------- */
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+
+    outline: 2px solid var(--ring);
+
+    outline-offset: 3px;
+
+    border-radius: var(--r-sm);
+
+    transition: outline-color var(--fast);
+
+}
+
+
+:where(button, .nav-item, .tool-btn):focus:not(:focus-visible) {
+
+    outline: none;
+
+}
+
+
+/* --- Live indicator ------------------------------------------- */
+
+@keyframes sqlshield-pulse {
+
+    0%, 100% {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+        box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.45);
+
+    }
+
+    50% {
+
+        opacity: 0.55;
+
+        transform: scale(0.82);
+
+        box-shadow: 0 0 0 6px rgba(45, 212, 191, 0);
+
+    }
+
+}
+
+
+.security-pulse > span,
+.feature-status > span,
+.status-item.ok b::before {
+
+    animation: sqlshield-pulse 2.4s var(--ease) infinite;
+
+}
+
+
+/* --- Button press feedback ------------------------------------ */
+
+.primary-btn:active,
+.secondary-btn:active,
+.tool-btn:active {
+
+    transform: translateY(1px) scale(0.985);
+
+}
+
+
+/* --- Quiet the oversized card badges -------------------------- */
+
+.chart-badge,
+.hero-badge,
+.detail-tag,
+.feature-status,
+.status-pill,
+.event-pill {
+
+    border-radius: var(--r-pill);
+
+}
+
+
+/* --- Scrollbar ------------------------------------------------- */
+
+::-webkit-scrollbar {
+
+    width: 10px;
+
+    height: 10px;
+
+}
+
+
+::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+::-webkit-scrollbar-thumb {
+
+    background: rgba(148, 163, 184, 0.18);
+
+    border-radius: var(--r-pill);
+
+    border: 3px solid transparent;
+
+    background-clip: content-box;
+
+    transition: background var(--fast);
+
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+
+    background: rgba(45, 212, 191, 0.35);
+
+    background-clip: content-box;
+
+}
+
+
+/* --- Reduced motion ------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    :root {
+
+        --fast: 1ms linear;
+
+        --smooth: 1ms linear;
+
+    }
+
+    .security-pulse > span,
+    .feature-status > span,
+    .status-item.ok b::before {
+
+        animation: none;
+
+    }
+
+    .stat-card:hover,
+    .feature-card:hover,
+    .security-detail-card:hover {
+
+        transform: none;
+
     }
 
 }

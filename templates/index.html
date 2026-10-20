@@ -696,7 +696,7 @@
             <div class="stat-card">
 
                 <div class="stat-icon green">
-                    <i class="fa-solid fa-shield-check"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
 
                 <div>
@@ -892,7 +892,7 @@
 
                     <span>THREAT TIMELINE</span>
 
-                    <h3>Security Activity - Last 7 Days</h3>
+                    <h3>Security Activity – Last 7 Days</h3>
 
                 </div>
 
@@ -1857,7 +1857,7 @@ function renderLiveFeed(events) {
 
                 <td colspan="5" class="empty-table">
 
-                    <i class="fa-solid fa-shield-check"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
 
                     <span>No security events recorded.</span>
 
@@ -2139,6 +2139,44 @@ function updateSystemStatus(system) {
 // TIMELINE CHART
 // =====================================================
 
+/**
+ * Builds a continuous list of the last `days` days so the chart always
+ * shows a full window. Days without events are filled with a zero, which
+ * reads far better than a single floating point.
+ */
+
+function buildTimelineSeries(timeline, days) {
+
+    const counts = new Map();
+
+    (timeline || []).forEach(row => {
+        counts.set(row.date, row.total);
+    });
+
+    const series = [];
+
+    const today = new Date();
+
+    for (let offset = days - 1; offset >= 0; offset--) {
+
+        const day = new Date(today);
+
+        day.setDate(today.getDate() - offset);
+
+        const key = day.toISOString().slice(0, 10);
+
+        series.push({
+            date: key,
+            total: counts.get(key) || 0
+        });
+
+    }
+
+    return series;
+
+}
+
+
 function renderTimeline(timeline) {
 
     const canvas =
@@ -2152,13 +2190,21 @@ function renderTimeline(timeline) {
         timelineChart.destroy();
     }
 
-    const labels = timeline.length
-        ? timeline.map(row => row.date)
-        : ["No data"];
+    const series =
+        buildTimelineSeries(timeline, 7);
 
-    const values = timeline.length
-        ? timeline.map(row => row.total)
-        : [0];
+    const labels = series.map(row => {
+
+        const date = new Date(row.date);
+
+        return date.toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric"
+        });
+
+    });
+
+    const values = series.map(row => row.total);
 
 
     timelineChart =
@@ -2176,18 +2222,30 @@ function renderTimeline(timeline) {
 
                     borderColor: "#38bdf8",
 
+                    borderWidth: 2,
+
                     backgroundColor:
-                        "rgba(56, 189, 248, 0.18)",
+                        "rgba(56, 189, 248, 0.16)",
 
                     fill: true,
 
-                    tension: 0.35,
+                    tension: 0.38,
 
-                    pointBackgroundColor: "#38bdf8",
+                    pointBackgroundColor: "#0b1120",
+
+                    pointBorderColor: "#38bdf8",
+
+                    pointBorderWidth: 2,
 
                     pointRadius: 4,
 
-                    pointHoverRadius: 6
+                    pointHoverRadius: 7,
+
+                    pointHoverBackgroundColor: "#38bdf8",
+
+                    pointHoverBorderColor: "#0b1120",
+
+                    pointHoverBorderWidth: 3
 
                 }]
 
@@ -2199,10 +2257,61 @@ function renderTimeline(timeline) {
 
                 maintainAspectRatio: false,
 
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                animation: {
+
+                    duration: 800,
+
+                    easing: "easeOutQuart"
+
+                },
+
                 plugins: {
 
                     legend: {
                         display: false
+                    },
+
+                    tooltip: {
+
+                        backgroundColor:
+                            "rgba(7, 11, 20, 0.95)",
+
+                        borderColor:
+                            "rgba(148, 163, 184, 0.2)",
+
+                        borderWidth: 1,
+
+                        titleColor: "#f8fafc",
+
+                        bodyColor: "#94a3b8",
+
+                        padding: 12,
+
+                        cornerRadius: 10,
+
+                        usePointStyle: true,
+
+                        callbacks: {
+
+                            label: function(context) {
+
+                                const value =
+                                    context.parsed.y;
+
+                                return ` ${value} event${value === 1 ? "" : "s"}`;
+
+                            }
+
+                        }
+
                     }
 
                 },
@@ -2210,23 +2319,62 @@ function renderTimeline(timeline) {
                 scales: {
 
                     x: {
-                        ticks: {
-                            color: "#64748b"
-                        },
+
                         grid: {
-                            color: "rgba(148, 163, 184, 0.08)"
+                            display: false
+                        },
+
+                        border: {
+                            display: false
+                        },
+
+                        ticks: {
+
+                            color: "#64748b",
+
+                            font: {
+                                size: 10
+                            },
+
+                            maxRotation: 0,
+
+                            autoSkipPadding: 16
+
                         }
+
                     },
 
                     y: {
+
                         beginAtZero: true,
-                        ticks: {
-                            color: "#64748b",
-                            precision: 0
-                        },
+
                         grid: {
-                            color: "rgba(148, 163, 184, 0.08)"
+
+                            color:
+                                "rgba(148, 163, 184, 0.08)",
+
+                            drawTicks: false
+
+                        },
+
+                        border: {
+                            display: false
+                        },
+
+                        ticks: {
+
+                            color: "#64748b",
+
+                            font: {
+                                size: 10
+                            },
+
+                            precision: 0,
+
+                            padding: 10
+
                         }
+
                     }
 
                 }
@@ -2234,6 +2382,50 @@ function renderTimeline(timeline) {
             }
 
         });
+
+
+    // Apply a soft area gradient under the line.
+
+    requestAnimationFrame(function() {
+
+        const dataset =
+            timelineChart.data.datasets[0];
+
+        const area =
+            timelineChart.chartArea;
+
+        if (!area) {
+            return;
+        }
+
+        const gradient =
+            timelineChart.ctx.createLinearGradient(
+                0,
+                area.top,
+                0,
+                area.bottom
+            );
+
+        gradient.addColorStop(
+            0,
+            "rgba(56, 189, 248, 0.34)"
+        );
+
+        gradient.addColorStop(
+            0.6,
+            "rgba(56, 189, 248, 0.08)"
+        );
+
+        gradient.addColorStop(
+            1,
+            "rgba(56, 189, 248, 0)"
+        );
+
+        dataset.backgroundColor = gradient;
+
+        timelineChart.update("none");
+
+    });
 
 }
 
@@ -2335,7 +2527,7 @@ function renderAttackLogs(logs) {
                     colspan="4"
                     class="empty-table">
 
-                    <i class="fa-solid fa-shield-check"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
 
                     <span>
                         No security events recorded.
@@ -2420,6 +2612,99 @@ function renderAttackLogs(logs) {
 // CHART
 // =====================================================
 
+/**
+ * Draws the total in the middle of the doughnut.
+ * Registered as a Chart.js plugin so the readout stays
+ * in sync with the data on every refresh.
+ */
+
+const centerReadout = {
+
+    id: "centerReadout",
+
+    afterDraw(chart, args, options) {
+
+        if (chart.config.type !== "doughnut") {
+            return;
+        }
+
+        const total = chart.data.datasets[0].data
+            .reduce((sum, value) => sum + Number(value || 0), 0);
+
+        if (!total) {
+            return;
+        }
+
+        const {
+            ctx,
+            chartArea
+        } = chart;
+
+        const centerX =
+            (chartArea.left + chartArea.right) / 2;
+
+        const centerY =
+            (chartArea.top + chartArea.bottom) / 2;
+
+        ctx.save();
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillStyle = "#f8fafc";
+        ctx.font =
+            '600 34px "Space Grotesk", sans-serif';
+
+        ctx.fillText(
+            String(total),
+            centerX,
+            centerY - 6
+        );
+
+        ctx.fillStyle = "#64748b";
+        ctx.font =
+            '600 10px "Inter", sans-serif';
+
+        ctx.fillText(
+            "TOTAL EVENTS",
+            centerX,
+            centerY + 20
+        );
+
+        ctx.restore();
+
+    }
+
+};
+
+
+/**
+ * Builds a soft vertical gradient for the chart area fill so the
+ * timeline reads with depth instead of a flat wash.
+ */
+
+function gradientFor(ctx, area, color, from, to) {
+
+    if (!area) {
+        return color;
+    }
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            area.top,
+            0,
+            area.bottom
+        );
+
+    gradient.addColorStop(0, from || color);
+    gradient.addColorStop(1, to || color);
+
+    return gradient;
+
+}
+
+
 function renderChart(stats) {
 
     const canvas =
@@ -2431,6 +2716,25 @@ function renderChart(stats) {
     }
 
 
+    const segments = [
+        {
+            label: "Secure Records",
+            value: stats.total_users || 0,
+            color: "#2dd4bf"
+        },
+        {
+            label: "SQL Attacks",
+            value: stats.sql_attacks || 0,
+            color: "#f43f5e"
+        },
+        {
+            label: "Unauthorized",
+            value: stats.unauthorized_attempts || 0,
+            color: "#f59e0b"
+        }
+    ];
+
+
     securityChart =
         new Chart(canvas, {
 
@@ -2438,29 +2742,30 @@ function renderChart(stats) {
 
             data: {
 
-                labels: [
-                    "Secure Records",
-                    "SQL Attacks",
-                    "Unauthorized"
-                ],
+                labels:
+                    segments.map(s => s.label),
 
                 datasets: [{
 
-                    data: [
-                        stats.total_users || 0,
-                        stats.sql_attacks || 0,
-                        stats.unauthorized_attempts || 0
-                    ],
+                    data:
+                        segments.map(s => s.value),
 
-                    backgroundColor: [
-                        "#2dd4bf",
-                        "#f43f5e",
-                        "#f59e0b"
-                    ],
+                    backgroundColor:
+                        segments.map(s => s.color),
 
-                    borderWidth: 0,
+                    borderColor:
+                        "rgba(7, 11, 20, 0.9)",
 
-                    hoverOffset: 8
+                    borderWidth: 3,
+
+                    borderRadius: 8,
+
+                    hoverOffset: 12,
+
+                    hoverBorderColor:
+                        "rgba(255, 255, 255, 0.18)",
+
+                    hoverBorderWidth: 3
 
                 }]
 
@@ -2472,7 +2777,17 @@ function renderChart(stats) {
 
                 maintainAspectRatio: false,
 
-                cutout: "72%",
+                cutout: "74%",
+
+                animation: {
+
+                    animateRotate: true,
+
+                    duration: 900,
+
+                    easing: "easeOutQuart"
+
+                },
 
                 plugins: {
 
@@ -2484,17 +2799,68 @@ function renderChart(stats) {
 
                             color: "#b8c4d8",
 
-                            padding: 20,
+                            padding: 18,
 
-                            usePointStyle: true
+                            usePointStyle: true,
+
+                            pointStyle: "circle",
+
+                            boxWidth: 8,
+
+                            boxHeight: 8,
+
+                            font: {
+
+                                size: 11
+
+                            }
+
+                        },
+
+                        onClick: function(event, item) {
+
+                            const segment =
+                                segments[item.index];
+
+                            showToast(
+                                "Security Activity",
+                                `${segment.label}: ${segment.value}`,
+                                "success"
+                            );
 
                         }
+
+                    },
+
+                    tooltip: {
+
+                        backgroundColor:
+                            "rgba(7, 11, 20, 0.95)",
+
+                        borderColor:
+                            "rgba(148, 163, 184, 0.2)",
+
+                        borderWidth: 1,
+
+                        titleColor: "#f8fafc",
+
+                        bodyColor: "#94a3b8",
+
+                        padding: 12,
+
+                        cornerRadius: 10,
+
+                        displayColors: true,
+
+                        usePointStyle: true
 
                     }
 
                 }
 
-            }
+            },
+
+            plugins: [centerReadout]
 
         });
 
@@ -2886,7 +3252,7 @@ function renderScanResult(data) {
 
             <i class="fa-solid ${blocked
                 ? "fa-shield-virus"
-                : "fa-shield-check"}"></i>
+                : "fa-shield-halved"}"></i>
 
             <strong>
                 ${blocked

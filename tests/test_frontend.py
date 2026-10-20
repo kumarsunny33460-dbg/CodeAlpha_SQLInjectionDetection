@@ -49,6 +49,8 @@ class TestTemplate:
             "renderDashboard",
             "renderChart",
             "renderTimeline",
+            "buildTimelineSeries",
+            "gradientFor",
             "loadLiveFeed",
             "renderLiveFeed",
             "checkHealth",
@@ -57,6 +59,10 @@ class TestTemplate:
             "renderScanResult",
         ):
             assert f"function {name}(" in script, f"{name} is missing"
+
+    def test_the_chart_plugin_is_defined(self, script: str):
+        assert "const centerReadout =" in script
+        assert "afterDraw(chart, args, options)" in script
 
 
 class TestDomContract:

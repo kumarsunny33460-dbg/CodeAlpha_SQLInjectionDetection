@@ -49,7 +49,7 @@ authenticated encryption and a real-time monitoring dashboard.
 | **Observability** | `print()` | Structured JSON logs, request correlation, audit trail |
 | **Hardening** | None | Rate limiting, security headers, CORS, input validation, duplicate protection |
 | **Delivery** | `Procfile` pointing at a missing object | Docker, Compose, Render, Railway, Fly.io, GitHub Actions CI |
-| **Quality** | No tests | 202 pytest cases, Ruff, mypy, pre-commit |
+| **Quality** | No tests | 205 pytest cases, Ruff, mypy, pre-commit |
 
 ---
 
@@ -248,7 +248,7 @@ aliases so existing clients keep working.
 ## 🧪 Testing
 
 ```bash
-pytest                                   # 202 tests
+pytest                                   # 205 tests
 pytest --cov=sqlshield --cov-report=term-missing
 ```
 
