@@ -8,7 +8,9 @@ services:
     environment:
       FLASK_ENV: production
       PORT: "8000"
-      MONGO_URI: mongodb://mongo:27017
+      # Defaults to the local MongoDB service below. Set MONGO_URI in .env
+      # to point the container at a MongoDB Atlas cluster instead.
+      MONGO_URI: ${MONGO_URI:-mongodb://mongo:27017}
       DATABASE_NAME: SQLInjectionSecurity
       COLLECTION_NAME: SecureUsers
       EVENTS_COLLECTION: AttackLogs
